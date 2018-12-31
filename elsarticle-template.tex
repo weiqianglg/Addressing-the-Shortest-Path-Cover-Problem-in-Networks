@@ -1,0 +1,149 @@
+\documentclass[review]{elsarticle}
+
+\usepackage{amsmath}
+
+\usepackage{graphicx, caption, subcaption}
+%%\modulolinenumbers[5]
+
+\journal{Journal of \LaTeX\ Templates}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%% Elsevier bibliography styles
+%%%%%%%%%%%%%%%%%%%%%%%
+%% To change the style, put a % in front of the second line of the current style and
+%% remove the % from the second line of the style you would like to use.
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Numbered
+%\bibliographystyle{model1-num-names}
+
+%% Numbered without titles
+%\bibliographystyle{model1a-num-names}
+
+%% Harvard
+%\bibliographystyle{model2-names.bst}\biboptions{authoryear}
+
+%% Vancouver numbered
+%\usepackage{numcompress}\bibliographystyle{model3-num-names}
+
+%% Vancouver name/year
+%\usepackage{numcompress}\bibliographystyle{model4-names}\biboptions{authoryear}
+
+%% APA style
+%\bibliographystyle{model5-names}\biboptions{authoryear}
+
+%% AMA style
+%\usepackage{numcompress}\bibliographystyle{model6-num-names}
+
+%% `Elsevier LaTeX' style
+\bibliographystyle{elsarticle-num}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Addressing the Shortest Path Cover Problem in Networks}
+
+%% or include affiliations in footnotes:
+\author[mymainaddress,mysecondaryaddress]{Qiang Wei}
+
+
+\author[mymainaddress]{GuangMin Hu\corref{mycorrespondingauthor}}
+\cortext[mycorrespondingauthor]{Corresponding author}
+\ead{hgm@uestc.edu.cn}
+
+
+\address[mymainaddress]{School of Communication and Information Engineering, University of Electronic Science and Technology of China, Chengdu, 610051, China}
+\address[mysecondaryaddress]{Science and Technology On Blind Signal Processing Laboratory, Chengdu, 610041, China}
+
+\begin{abstract}
+This template helps you to create a properly formatted \LaTeX\ manuscript.
+\end{abstract}
+
+\begin{keyword}
+\texttt{elsarticle.cls}\sep \LaTeX\sep Elsevier \sep template
+\MSC[2010] 00-01\sep  99-00
+\end{keyword}
+
+\end{frontmatter}
+
+
+\section{Introduction}
+
+Network topology is a crucial prerequisite for understanding network function and performance \cite{yook2002modeling, albert2002statistical}. For complex networks such as the Internet, a dedicated monitoring infrastructure is needed to map networks accurately and timely.  An important consideration in the design of monitoring infrastructures is that of developing low-cost solutions, but placing and operating monitors at all sites in a network is neither cost-efficient nor practical, so the key problem is how to deploy a minimum subset of sites as monitors for topology awareness.
+
+Several studies have focused on the minimum monitors deploying problem for topology awareness. In the field of network tomography \cite{vardi1996network} researchers state and solve the problem under specified conditions \cite{kumar2006practical,natu2008probe,ma2014inferring,ma2015optimal,he2017robust}. And in the field of traceroute-like exploring \cite{burch1999mapping} researchers give some heuristic criterias for monitor selection \cite{dall2006exploring,han2008method,zou2009logic}.  However current studies are neither universal for different detecting models nor computable for large networks.   
+
+Boothe.P etc generalize the minimum monitors deploying problem as the shortest path cover($SPC$) problem \cite{boothe2007graph}. In a network, each site knows of one or more shortest paths to every other site, based upon routing information for disseminating messages. Given the links on the paths, each site knows or covers a subset of the links in the network. The $SPC$ problem is to identify a minimum subset of sites to cover every link of the network. Here we restate the SPC problem from \cite{boothe2007graph,pignolet2017tomographic} formally,  we model a network by a simple graph $G(V,E)$, where $V$ is a set of nodes representing network sites and $E$ is a set of  edges representing links. For any two nodes $u,v \in V $, let $SP(u,v)$ be the set of all shortest paths between $u,v$. Let $R$ be the routing strategy that control which edges can be covered and $E_R(u,v)$ be the monitored edges under routing model $R$. We denote $E_R(u)$ as the edges covered by node $u$, i.e. $E_R(u)=\cup_{v \in V \setminus u}E_R(u,v)$, and for a given subset of nodes $C$, let $E_R(C)$ be the covered edges by all nodes in $C$,  i.e. $E_R(C)=\cup_{u \in C} E_R(u)$. On the basis of these definitions, the $SPC$ problem can be formalized as:
+\begin{gather*}
+min    \quad \lvert C \lvert \\
+s.t.   \quad E_R(C)=E
+\end{gather*}
+
+where $\lvert \bullet \rvert$ is the cardinality of a set.
+
+The corresponding $maximum k-SPC$ problem can be formalized as:
+\begin{gather*}
+max   \quad   \lvert E_R(C) \rvert \\
+s.t.  \quad \lvert C \rvert \leq k, \quad C \subseteq V
+\end{gather*}
+
+For $p \in SP(u,v)$ we denote $E(p)$ as the edges list of the shortest path $p$ and $ES(p)$ as the edges set of $p$. In this paper we consider two different routing strategies $R$:
+
+(1) Union $R=\cup$ : $E_R(u,v)=E_{\cup}(u,v)=\cup_{p \in SP(u,v)}ES(p)$
+
+(2) Only one $R=!$ : $E_R(u,v)=E_!(u,v)=ES(p)$ where $p$ is picked from $SP(u,v)$ . In this paper we consider a  consistent way to pick $p$, for each $p$, $E(p)$ is converted to a edge string at the beginning, and then the first one in alphabetical order is picked. For example,  $SP(u,v)=\{E(p_1):=[e_1, e_2,e_5], E(p_2):=[e_1, e_2,e_4]\}$, we will pick $p_2$ because $"e_1e_2e_4"<"e_1e_2e_5"$.
+
+(3) Intersection $R=\cap$ :  $E_R(u,v)=E_{\cap}(u,v)=\cap_{s \in SP(u,v)}E(s)$
+
+The three routing models characterize the best, general and worst case sets of covered edges that can be learned between $u,v$.
+
+Although some simple classes of network has been solved \cite{Boothe, Pignolet}, the SPC problem for general complex networks is still an open problem. There are two challenges for the SPC problem. One is the computational complexity, for arbitrary network, the SPC problem is NP-hard \cite{Boothe}. The other is the computing time for shortest paths in large networks with millions of nodes and edges. The covered edges of each node must be known as a precondition for the SPC problem, but it is non-trivial to be executed for large networks \cite{Akiba}.
+
+In this paper, we first show that the optimal subset of nodes for the SPC is the solution to a generalized set cover problem \cite{Karp}, which can be  approximately solved by the classic greedy algorithm \cite{Chvatal}. we then develop a method to approximate the solution by graph sampling for large networks. Although only undirected and unweighted networks are been considered in this paper, the results can be easily extended to directed and weighted networks.
+
+\section{Modeling SPC as a Set Cover Problem}
+
+In the following, we aim for good approximation algorithms and heuristics that solve the SPC problem in practice. In particular, we will exploit the fact that SPC can be modeled as an instance of the well-known Set Cover problem, therefore algorithms suitable for Set Cover problem computations transfer to SPC. The classic Set Cover(SC) problem is defined as follows: given a universe set $U$ and a family $S$ of subsets of $U$ , the goal is to find a minimum cardinality subset $L \subseteq S$ whose union is $U$. The corresponding $k$-SC problem is defined as: given a integer $k$, the goal is to find $k$ sets in $S$ whose union has a maximum cardinality.
+
+In our case,  $U$ consists all edges of the network, i.e. $U=E$. The set $S$ is composed of the covered edge sets of all nodes $V$, i.e. $S=\{E_R(u)|u \in V\}$. Clearly, we only need to find cardinality-minimum solution $L^* \subseteq S$, then we can identify the solution of the corresponding SPC problem $C^*$ according to $L^*$, i.e. the SC formulation solves our SPC problem. Similarly, we can solve the $k$-SPC problem by converting it to a $k$-SC problem.
+
+Fig.1 shows a example of how to convert the SPC problem to the SC problem. Fig.1(a) is a simple graph with 6 nodes and 7 edges. In order to find the minimum cover, we first collect all the shortest path. Fig.1(b) shows some typical shortest paths set in the network and Fig.1(c) shows the edges covered by every node under three different strategies. Now we can find the SPC solution by solving the corresponding SC problem, e.g. one of the SC solution under $R=\cap$ strategy is $L^*=\{\{e_1,e_2,e_4,e_5,e_6\},\{e_1,e_3,e_4,e_5,e_7\} \}$, so $C^*=\{1,5\}$.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[scale=0.5]{example.pdf}
+\caption{An example for converting SPC to SC.}
+\end{figure}
+
+
+\begin{itemize}
+\item document style
+\item baselineskip
+\item front matter
+\item keywords and MSC codes
+\item theorems, definitions and proofs
+\item lables of enumerations
+\item citation style and labeling.
+\end{itemize}
+
+
+
+The author names and affiliations could be formatted in two ways:
+\begin{enumerate}[(1)]
+\item Group the authors per affiliation.
+\item Use footnotes to indicate the affiliations.
+\end{enumerate}
+See the front matter of this document for examples. You are recommended to conform your choice to the journal you are submitting to.
+
+\section{Bibliography styles}
+
+There are various bibliography styles available. You can select the style of your choice in the preamble of this document. These styles are Elsevier styles based on standard styles like Harvard and Vancouver. Please use Bib\TeX\ to generate your bibliography and include DOIs whenever available.
+
+Here are two sample references: \cite{Feynman1963118,Dirac1953888}.
+
+
+\bibliography{mybibfile}
+
+\end{document}
