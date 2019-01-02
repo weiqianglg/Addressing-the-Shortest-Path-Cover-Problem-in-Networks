@@ -1,7 +1,7 @@
 \documentclass[review]{elsarticle}
 
 \usepackage{amsmath}
-
+\usepackage{bm}
 \usepackage{graphicx, caption, subcaption}
 %%\modulolinenumbers[5]
 
@@ -75,7 +75,7 @@ Network topology is a crucial prerequisite for understanding network function an
 
 Several studies have focused on the minimum monitors deploying problem for topology awareness. In the field of network tomography \cite{vardi1996network} researchers state and solve the problem under specified conditions \cite{kumar2006practical,natu2008probe,ma2014inferring,ma2015optimal,he2017robust}. And in the field of traceroute-like exploring \cite{burch1999mapping} researchers give some heuristic criterias for monitor selection \cite{dall2006exploring,han2008method,zou2009logic}.  However current studies are neither universal for different detecting models nor computable for large networks.   
 
-Boothe.P etc generalize the minimum monitors deploying problem as the shortest path cover($SPC$) problem \cite{boothe2007graph}. In a network, each site knows of one or more shortest paths to every other site, based upon routing information for disseminating messages. Given the links on the paths, each site knows or covers a subset of the links in the network. The $SPC$ problem is to identify a minimum subset of sites to cover every link of the network. Here we restate the SPC problem from \cite{boothe2007graph,pignolet2017tomographic} formally,  we model a network by a simple graph $G(V,E)$, where $V$ is a set of nodes representing network sites and $E$ is a set of  edges representing links. For any two nodes $u,v \in V $, let $SP(u,v)$ be the set of all shortest paths between $u,v$. Let $R$ be the routing strategy that control which edges can be covered and $E_R(u,v)$ be the monitored edges under routing model $R$. We denote $E_R(u)$ as the edges covered by node $u$, i.e. $E_R(u)=\cup_{v \in V \setminus u}E_R(u,v)$, and for a given subset of nodes $C$, let $E_R(C)$ be the covered edges by all nodes in $C$,  i.e. $E_R(C)=\cup_{u \in C} E_R(u)$. On the basis of these definitions, the $SPC$ problem can be formalized as:
+Boothe.P etc generalize the minimum monitors deploying problem as the shortest path cover($SPC$) problem \cite{boothe2007graph}. In a network, each site knows of one or more shortest paths to every other site, based upon routing information for disseminating messages. Given the links on the paths, each site knows or covers a subset of the links in the network. The $SPC$ problem is to identify a minimum subset of sites to cover every link of the network. Here we restate the $SPC$ problem from \cite{boothe2007graph,pignolet2017tomographic} formally,  we model a network by a undirected and unweighted graph $G(V,E)$, where $V$ is a set of nodes representing network sites and $E$ is a set of  edges representing links. For any two nodes $u,v \in V $, let $SP(u,v)$ be the set of all shortest paths between $u,v$. Let $R$ be the routing strategy that control which edges can be covered and $E_R(u,v)$ be the monitored edges under routing model $R$. We denote $E_R(u)$ as the edges covered by node $u$, i.e. $E_R(u)=\cup_{v \in V \setminus u}E_R(u,v)$, and for a given subset of nodes $C$, let $E_R(C)$ be the covered edges by all nodes in $C$,  i.e. $E_R(C)=\cup_{u \in C} E_R(u)$. On the basis of these definitions, the $SPC$ problem can be formalized as:
 \begin{gather*}
 min    \quad \lvert C \lvert \\
 s.t.   \quad E_R(C)=E
@@ -83,39 +83,81 @@ s.t.   \quad E_R(C)=E
 
 where $\lvert \bullet \rvert$ is the cardinality of a set.
 
-The corresponding $maximum k-SPC$ problem can be formalized as:
+The corresponding $maximum \  k-SPC$ problem can be formalized as:
 \begin{gather*}
 max   \quad   \lvert E_R(C) \rvert \\
 s.t.  \quad \lvert C \rvert \leq k, \quad C \subseteq V
 \end{gather*}
 
-For $p \in SP(u,v)$ we denote $E(p)$ as the edges list of the shortest path $p$ and $ES(p)$ as the edges set of $p$. In this paper we consider two different routing strategies $R$:
+For $p \in SP(u,v)$ we denote $E(p)$ as the edges list of the shortest path $p$ and $ES(p)$ as the edges set of $p$. In this paper we consider two different routing strategies $R$.
 
 (1) Union $R=\cup$ : $E_R(u,v)=E_{\cup}(u,v)=\cup_{p \in SP(u,v)}ES(p)$
 
-(2) Only one $R=!$ : $E_R(u,v)=E_!(u,v)=ES(p)$ where $p$ is picked from $SP(u,v)$ . In this paper we consider a  consistent way to pick $p$, for each $p$, $E(p)$ is converted to a edge string at the beginning, and then the first one in alphabetical order is picked. For example,  $SP(u,v)=\{E(p_1):=[e_1, e_2,e_5], E(p_2):=[e_1, e_2,e_4]\}$, we will pick $p_2$ because $"e_1e_2e_4"<"e_1e_2e_5"$.
+(2) Intersection $R=\cap$ :  $E_R(u,v)=E_{\cap}(u,v)=\cap_{s \in SP(u,v)}E(s)$
 
-(3) Intersection $R=\cap$ :  $E_R(u,v)=E_{\cap}(u,v)=\cap_{s \in SP(u,v)}E(s)$
+The two routing models characterize the best and worst case sets of covered edges that can be learned between $u,v$.
 
-The three routing models characterize the best, general and worst case sets of covered edges that can be learned between $u,v$.
+Although some simple classes of network has been solved \cite{boothe2007graph,pignolet2017tomographic}, the $SPC$ and $maximum \  k-SPC$ problem for general complex networks is still an open problem. There are two challenges. One is the computational complexity, for an arbitrary network, solving the $SPC$ and $maximum \  k-SPC$ problem is NP-hard \cite{boothe2007graph}. The other is the computing time for shortest paths in large networks with millions of nodes and edges. The covered edges of each node must be known as a precondition, but it is non-trivial to be executed for large networks \cite{gubichev2010fast,akiba2012shortest,madkour2017survey}.
 
-Although some simple classes of network has been solved \cite{Boothe, Pignolet}, the SPC problem for general complex networks is still an open problem. There are two challenges for the SPC problem. One is the computational complexity, for arbitrary network, the SPC problem is NP-hard \cite{Boothe}. The other is the computing time for shortest paths in large networks with millions of nodes and edges. The covered edges of each node must be known as a precondition for the SPC problem, but it is non-trivial to be executed for large networks \cite{Akiba}.
+In this paper, we first show that the optimal subset of nodes for the $SPC$($maximum \  k-SPC$) is the solution to a generalized set cover(maximum k-coverage) problem \cite{karp1972reducibility}, which can be  approximately solved by the classic greedy algorithm \cite{chvatal1979greedy, vazirani2013approximation}. we then develop a method to approximate the solution for large networks by graph sampling. Although only undirected and unweighted networks are been considered in this paper, the results can be easily extended to directed and weighted networks.
 
-In this paper, we first show that the optimal subset of nodes for the SPC is the solution to a generalized set cover problem \cite{Karp}, which can be  approximately solved by the classic greedy algorithm \cite{Chvatal}. we then develop a method to approximate the solution by graph sampling for large networks. Although only undirected and unweighted networks are been considered in this paper, the results can be easily extended to directed and weighted networks.
+\section{Modeling $SPC$ as a Set Cover Problem}
 
-\section{Modeling SPC as a Set Cover Problem}
+In the following, we aim for good approximation algorithms and heuristics that solve the $SPC$ problem in practice. In particular, we will exploit the fact that $SPC$ can be modeled as an instance of the well-known set cover($SC$) problem, therefore algorithms suitable for $SC$ problem computations transfer to $SPC$. The classic $SC$ problem is defined as follows: given a universe set $U$ and a family $S$ of subsets of $U$ , the goal is to find a minimum cardinality subset $L \subseteq S$ whose union is $U$. The corresponding $maximum \  k-SC$ problem is defined as: given a integer $k$, the goal is to find at most $k$ sets in $S$ whose union has a maximum cardinality.
 
-In the following, we aim for good approximation algorithms and heuristics that solve the SPC problem in practice. In particular, we will exploit the fact that SPC can be modeled as an instance of the well-known Set Cover problem, therefore algorithms suitable for Set Cover problem computations transfer to SPC. The classic Set Cover(SC) problem is defined as follows: given a universe set $U$ and a family $S$ of subsets of $U$ , the goal is to find a minimum cardinality subset $L \subseteq S$ whose union is $U$. The corresponding $k$-SC problem is defined as: given a integer $k$, the goal is to find $k$ sets in $S$ whose union has a maximum cardinality.
+In our case,  $U$ consists all edges of the network $G(V,E)$, i.e. $U=E$. The set $S$ is composed of the covered edge sets of all nodes $V$, i.e. $S=\{E_R(u)|u \in V\}$. Clearly, we only need to find cardinality-minimum solution $L^* \subseteq S$, then we can identify the solution of the corresponding $SPC$ problem $C^*$ according to $L^*$, that is to say the $SC$ formulation solves the $SPC$ problem. Similarly, we can solve the $maximum \  k-SPC$ problem by converting it to a $maximum \  k-SC$ problem.
 
-In our case,  $U$ consists all edges of the network, i.e. $U=E$. The set $S$ is composed of the covered edge sets of all nodes $V$, i.e. $S=\{E_R(u)|u \in V\}$. Clearly, we only need to find cardinality-minimum solution $L^* \subseteq S$, then we can identify the solution of the corresponding SPC problem $C^*$ according to $L^*$, i.e. the SC formulation solves our SPC problem. Similarly, we can solve the $k$-SPC problem by converting it to a $k$-SC problem.
-
-Fig.1 shows a example of how to convert the SPC problem to the SC problem. Fig.1(a) is a simple graph with 6 nodes and 7 edges. In order to find the minimum cover, we first collect all the shortest path. Fig.1(b) shows some typical shortest paths set in the network and Fig.1(c) shows the edges covered by every node under three different strategies. Now we can find the SPC solution by solving the corresponding SC problem, e.g. one of the SC solution under $R=\cap$ strategy is $L^*=\{\{e_1,e_2,e_4,e_5,e_6\},\{e_1,e_3,e_4,e_5,e_7\} \}$, so $C^*=\{1,5\}$.
+Figure \ref{fig:1} and table \ref{tab:1} shows a example of how to convert the $SPC$ problem to the corresponding $SC$ problem. \ref{fig:1} is a simple graph with 6 nodes and 7 edges. In order to find the minimum cover $C^*$, we first collect all the shortest path. Table \ref{tab:1}(\subref{tab:1a}) shows some typical shortest paths set in the network and table \ref{tab:1}(\subref{tab:1b}) shows the edges covered by every node under the two different strategies. Now we can find the $SPC$ solution by solving the corresponding $SC$ problem, e.g. one of the $SC$ solution under $R=\cap$ strategy is $L^*=\{\{e_1,e_2,e_4,e_5,e_6\},\{e_1,e_3,e_4,e_5,e_7\} \}$, so $C^*=\{1,5\}$.
 
 \begin{figure}[htb]
-\centering
-\includegraphics[scale=0.5]{example.pdf}
-\caption{An example for converting SPC to SC.}
+    \centering
+    \includegraphics[scale=0.5]{example.pdf}
+    \caption{A simple graph}
+    \label{fig:1}
 \end{figure}
+
+\begin{table}[htb]
+    \centering
+    \begin{subtable}{.5\linewidth}
+        \centering
+        \begin{tabular}{|l|l|}
+        \hline
+        \bm{$(u,v)$} & \bm{$SP(u,v)$} \\
+        \hline
+        $(1,2)$ & $\{\{e_1\}\}$ \\
+        $(1,6)$ & $\{\{e_2,e_6\}\}$ \\ 
+        $(2,6)$ & $\{\{e_3,e_6\},\{e_4,e_7\}\}$ \\ 
+        $(3,5)$ & $\{\{e_3,e_4\},\{e_6,e_7\}\}$ \\
+        $(4,5)$ & $\{\{e_3,e_4,e_5\},\{e_5,e_6,e_7\}\}$ \\
+        \hline
+        \end{tabular}
+        \caption{Some typical shortest paths set in \ref{fig:1} }
+        \label{tab:1a}
+    \end{subtable}
+    \qquad
+    \begin{subtable}{.5\linewidth}
+        \centering
+        \begin{tabular}{|l|l|l|}
+        \hline
+        \bm{$u$} & \bm{$E_{\cup}(u)$} & \bm{$E_{\cap}(u)$} \\
+        \hline
+        $1$ & $\{e_1,e_2,e_4,e_5,e_6\}$ & $\{e_1,e_2,e_4,e_5,e_6\}$ \\
+        $2$ & $\{e_1,e_3,e_4,e_5,e_6,e_7\}$ & $\{e_1,e_3,e_4,e_5\}$ \\ 
+        $3$ & $\{e_2,e_3,e_4,e_5,e_6,e_7\}$ & $\{e_2,e_3,e_5,e_6\}$ \\ 
+        $4$ & $\{e_2,e_3,e_4,e_5,e_6,e_7\}$ & $\{e_2,e_3,e_5,e_6\}$ \\
+        $5$ & $\{e_1,e_3,e_4,e_5,e_6,e_7\}$ & $\{e_1,e_3,e_4,e_5,e_7\}$ \\
+        $6$ & $\{e_2,e_3,e_4,e_5,e_6,e_7\}$ & $\{e_2,e_5,e_6,e_7\}$ \\
+        \hline
+        \end{tabular}
+        \caption{$E_{\cup}$ and $E_{\cap}$ for nodes in \ref{fig:1} }
+        \label{tab:1b}
+    \end{subtable}
+    
+    \caption{An example for converting $SPC$ to $SC$.}
+    \label{tab:1}
+\end{table}
+
+
 
 
 \begin{itemize}
