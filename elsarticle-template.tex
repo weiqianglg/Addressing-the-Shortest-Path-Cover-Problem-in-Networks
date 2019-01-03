@@ -97,11 +97,13 @@ For $p \in SP(u,v)$ we denote $E(p)$ as the edges list of the shortest path $p$ 
 
 The two routing models characterize the best and worst case sets of covered edges that can be learned between $u,v$.
 
-Although some simple classes of network has been solved \cite{boothe2007graph,pignolet2017tomographic}, the $SPC$ and $maximum \  k-SPC$ problem for general complex networks is still an open problem. There are two challenges. One is the computational complexity, for an arbitrary network, solving the $SPC$ and $maximum \  k-SPC$ problem is NP-hard \cite{boothe2007graph}. The other is the computing time for shortest paths in large networks with millions of nodes and edges. The covered edges of each node must be known as a precondition, but it is non-trivial to be executed for large networks \cite{gubichev2010fast,akiba2012shortest,madkour2017survey}.
+Although some simple classes of network has been solved \cite{boothe2007graph,pignolet2017tomographic}, the $SPC$ and $maximum \  k-SPC$ problem for general complex networks is still an open problem. There are two challenges. One is the computational complexity, for an arbitrary network, solving the $SPC$ and $maximum \  k-SPC$ problem is NP-hard \cite{boothe2007graph}. The other is the computing time for shortest paths in large networks with millions of nodes and edges. The covered edges of each node must be known as a precondition, but it is non-trivial to be executed for large networks \cite{gubichev2010fast,akiba2012shortest,madkour2017survey,panda2018survey}.
 
 In this paper, we first show that the optimal subset of nodes for the $SPC$($maximum \  k-SPC$) is the solution to a generalized set cover(maximum k-coverage) problem \cite{karp1972reducibility}, which can be  approximately solved by the classic greedy algorithm \cite{chvatal1979greedy, vazirani2013approximation}. we then develop a method to approximate the solution for large networks by graph sampling. Although only undirected and unweighted networks are been considered in this paper, the results can be easily extended to directed and weighted networks.
 
-\section{Modeling $SPC$ as a Set Cover Problem}
+\section{Method}
+
+\subsection{Modeling $SPC$ as a Set Cover Problem}
 
 In the following, we aim for good approximation algorithms and heuristics that solve the $SPC$ problem in practice. In particular, we will exploit the fact that $SPC$ can be modeled as an instance of the well-known set cover($SC$) problem, therefore algorithms suitable for $SC$ problem computations transfer to $SPC$. The classic $SC$ problem is defined as follows: given a universe set $U$ and a family $S$ of subsets of $U$ , the goal is to find a minimum cardinality subset $L \subseteq S$ whose union is $U$. The corresponding $maximum \  k-SC$ problem is defined as: given a integer $k$, the goal is to find at most $k$ sets in $S$ whose union has a maximum cardinality.
 
@@ -157,18 +159,12 @@ Figure \ref{fig:1} and table \ref{tab:1} shows a example of how to convert the $
     \label{tab:1}
 \end{table}
 
+After modeling $SPC$($maximum \  k-SPC$) as $SC$($maximum \  k-SC$), we can apply the 0-1 linear program formulation(ILP) \cite{vazirani2013approximation} for small-scale problem or the classic greedy algorithm(GA)\cite{chvatal1979greedy} in general. The GA repeatedly picks the set with the most uncovered items.  It can be shown that this algorithm achieves an approximation ratio of $\ln |E|-\ln\ln |E|$ \cite{slavik1997tight} for $SPC$ and $1-1/e$ for $maximum \  k-SPC$ \cite{hochbaum1997approximating}. Moreover, no algorithm can guarantee to improve this approximation by much \cite{feige1998threshold}.
 
+\subsection{Solving $SPC$ in Large Networks by Sampling}
 
+Finding $E_R(u)$ for every node $u$ in a large network is a time cosuming task \cite{madkour2017survey, panda2018survey}. 
 
-\begin{itemize}
-\item document style
-\item baselineskip
-\item front matter
-\item keywords and MSC codes
-\item theorems, definitions and proofs
-\item lables of enumerations
-\item citation style and labeling.
-\end{itemize}
 
 
 
